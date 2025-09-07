@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Texas Hold'em Equity Estimator</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #111a2b;
+      --accent: #7c5cff;
+      --muted: #a9b1c7;
+      --text: #e7ecf7;
+      --danger: #ff5c7a;
+      --ok: #2dd4bf;
+      --warn: #f59e0b;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% -10%, #1b2440 0%, #0b1220 60%);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin: 0 0 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .sub {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    @media (min-width: 940px) {
+      .grid-cols-3 {
+        grid-template-columns: 1.2fr 1fr 1fr;
+      }
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(6px);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .section-title {
+      font-weight: 650;
+      letter-spacing: .2px;
+      margin-bottom: 12px;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    select,
+    input[type="number"],
+    input[type="text"] {
+      background: #0d1426;
+      border: 1px solid rgba(255, 255, 255, .08);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 10px;
+      outline: none;
+      transition: border .2s ease, transform .02s ease;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: var(--accent);
+    }
+
+    .pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(124, 92, 255, .12);
+      border: 1px solid rgba(124, 92, 255, .35);
+      color: #c9baff;
+    }
+
+    .btn {
+      background: linear-gradient(180deg, #8d74ff, #6b53ff);
+      border: none;
+      color: white;
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 650;
+      letter-spacing: .2px;
+      box-shadow: 0 8px 22px rgba(124, 92, 255, .35);
+    }
+
+    .btn.secondary {
+      background: #26314f;
+      box-shadow: none;
+      border: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .results {
+      display: grid;
+      gap: 12px;
+    }
+
+    .stat {
+      display: grid;
+      grid-template-columns: 120px 1fr 70px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .bar {
+      height: 12px;
+      background: #1b2440;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .bar > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, #2dd4bf, #22d3ee);
+    }
+
+    .bar.warn > span {
+      background: linear-gradient(90deg, #f59e0b, #f97316);
+    }
+
+    .bar.danger > span {
+      background: linear-gradient(90deg, #fb7185, #f43f5e);
+    }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      color: #d6deff;
+      opacity: .85;
+    }
+
+    .cards-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .card-slot {
+      width: 58px;
+      height: 82px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px dashed rgba(255, 255, 255, .25);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      position: relative;
+    }
+
+    .card-slot.filled {
+      border-style: solid;
+    }
+
+    .card-chip {
+      position: absolute;
+      right: 6px;
+      top: 6px;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Texas Hold'em Equity Estimator</h1>
+    <div class="sub">Enter your <strong>hole cards</strong>, any known <strong>community cards</strong>, choose number of opponents, then run a quick Monte Carlo simulation to estimate your win odds.</div>
+
+    <div class="grid grid-cols-3">
+      <section class="card">
+        <div class="section-title">1) Your Hole Cards</div>
+        <div class="cards-row" id="hero-cards">
+          <div class="card-slot" data-slot="hero0"><span>Hero 1</span><span class="card-chip">hole</span></div>
+          <div class="card-slot" data-slot="hero1"><span>Hero 2</span><span class="card-chip">hole</span></div>
+        </div>
+        <div class="section-title" style="margin-top:16px">2) Community Cards</div>
+        <div class="cards-row" id="board-cards">
+          <div class="card-slot" data-slot="board0"><span>Flop 1</span><span class="card-chip">flop</span></div>
+          <div class="card-slot" data-slot="board1"><span>Flop 2</span><span class="card-chip">flop</span></div>
+          <div class="card-slot" data-slot="board2"><span>Flop 3</span><span class="card-chip">flop</span></div>
+          <div class="card-slot" data-slot="board3"><span>Turn</span><span class="card-chip">turn</span></div>
+          <div class="card-slot" data-slot="board4"><span>River</span><span class="card-chip">river</span></div>
+        </div>
+
+        <div class="section-title" style="margin-top:16px">3) Quick Inputs</div>
+        <div class="row">
+          <label>Opponents</label>
+          <input id="opponents" type="number" value="1" min="1" max="8" />
+          <label class="hint">Typical table: 1-8 opponents</label>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <label>Simulations</label>
+          <input id="trials" type="number" value="5000" min="500" step="500" />
+          <span class="pill">Faster → less accurate</span>
+        </div>
+
+        <div style="margin-top:14px" class="row">
+          <button id="runBtn" class="btn">▶ Run Simulation</button>
+          <button id="clearBtn" class="btn secondary">↺ Clear Cards</button>
+        </div>
+        <div class="hint" style="margin-top:10px">Tip: Click a slot to pick a card. Duplicates are prevented automatically.</div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">Card Picker</div>
+        <div class="grid-two">
+          <div>
+            <label>Rank</label>
+            <select id="rankSelect"></select>
+          </div>
+          <div>
+            <label>Suit</label>
+            <select id="suitSelect"></select>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button id="assignBtn" class="btn" disabled>Assign to Selected Slot</button>
+          <button id="eraseBtn" class="btn secondary" disabled>Clear Selected Slot</button>
+        </div>
+        <div class="hint" style="margin-top:8px">Selected slot: <span id="selectedSlotLabel" class="kbd">none</span></div>
+        <div class="hint" style="margin-top:4px">Taken cards: <span id="takenCards" class="kbd">(none)</span></div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">Estimated Results</div>
+        <div class="results">
+          <div class="stat"><div>Win</div><div class="bar"><span id="winBar" style="width:0%"></span></div><div id="winPct">0%</div></div>
+          <div class="stat"><div>Tie</div><div class="bar warn"><span id="tieBar" style="width:0%"></span></div><div id="tiePct">0%</div></div>
+          <div class="stat"><div>Lose</div><div class="bar danger"><span id="loseBar" style="width:0%"></span></div><div id="losePct">0%</div></div>
+        </div>
+        <div id="status" class="hint" style="margin-top:10px">Ready.</div>
+        <div class="footer">Notes: Monte Carlo simulation deals remaining unknown cards at random to opponents and the board (if needed), evaluates best 5-card hands, and estimates your equity across all trials.</div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+  /******************** Utilities: Deck & Cards ********************/
+  const RANKS = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"]; // T for Ten
+  const SUITS = ["♣","♦","♥","♠"]; // clubs, diamonds, hearts, spades
+  const RANK_VAL = Object.fromEntries(RANKS.map((r,i)=>[r, i+2]));
+
+  function makeDeck() {
+    const deck=[];
+    for (const r of RANKS) for (const s of SUITS) deck.push(r+s);
+    return deck; // e.g., 'A♠'
+  }
+  function cardToParts(card){ return { r: card[0], s: card.slice(1) }; }
+
+  function formatTaken(taken){ return taken.length ? taken.join(" ") : "(none)"; }
+
+  /******************** UI: Slots & Picker ********************/
+  const heroSlots = Array.from(document.querySelectorAll('#hero-cards .card-slot'));
+  const boardSlots = Array.from(document.querySelectorAll('#board-cards .card-slot'));
+  const allSlots = [...heroSlots, ...boardSlots];
+  const rankSel = document.getElementById('rankSelect');
+  const suitSel = document.getElementById('suitSelect');
+  const assignBtn = document.getElementById('assignBtn');
+  const eraseBtn = document.getElementById('eraseBtn');
+  const selectedSlotLabel = document.getElementById('selectedSlotLabel');
+  const takenCardsEl = document.getElementById('takenCards');
+
+  // Populate selects
+  RANKS.slice().reverse().forEach(r=>{ // A on top
+    const o=document.createElement('option'); o.value=r; o.textContent=r; rankSel.appendChild(o);
+  });
+  SUITS.forEach(s=>{
+    const o=document.createElement('option'); o.value=s; o.textContent=s; suitSel.appendChild(o);
+  });
+
+  const state = {
+    selectedSlot: null, // HTMLElement
+    slotMap: new Map(), // slotKey -> card like 'A♠'
+  };
+
+  // Helper to get a stable key per slot
+  function keyFor(slot){ return slot.getAttribute('data-slot'); }
+
+  function refreshTaken(){
+    const taken = Array.from(state.slotMap.values());
+    takenCardsEl.textContent = formatTaken(taken);
+  }
+  function renderSlot(slot){
+    const k = keyFor(slot);
+    const c = state.slotMap.get(k);
+    slot.classList.toggle('filled', !!c);
+    slot.innerHTML = '';
+    const chip = document.createElement('span'); chip.className='card-chip'; chip.textContent = slot.querySelector('.card-chip')?.textContent || '';
+    if (c){
+      const { r, s } = cardToParts(c);
+      const span = document.createElement('div');
+      span.style.fontSize='24px';
+      span.style.display='grid'; span.style.placeItems='center';
+      const color = (s==="♦"|| s==="♥") ? '#ff9fb5' : '#d6deff';
+      span.innerHTML = `<div style="font-weight:700;color:${color}">${r}</div><div style="margin-top:-2px;color:${color}">${s}</div>`;
+      slot.appendChild(span);
+      slot.appendChild(chip);
+    } else {
+      const label = document.createElement('span');
+      label.textContent = slot.getAttribute('data-slot').startsWith('hero') ? (slot.getAttribute('data-slot')==='hero0'?'Hero 1':'Hero 2') :
+        ({board0:'Flop 1',board1:'Flop 2',board2:'Flop 3',board3:'Turn',board4:'River'})[keyFor(slot)];
+      slot.appendChild(label);
+      slot.appendChild(chip);
+    }
+  }
+
+  allSlots.forEach(renderSlot);
+
+  allSlots.forEach(slot=>{
+    slot.addEventListener('click', ()=>{
+      state.selectedSlot = slot;
+      selectedSlotLabel.textContent = keyFor(slot);
+      assignBtn.disabled = false; eraseBtn.disabled = false;
+    });
+  });
+
+  assignBtn.addEventListener('click', ()=>{
+    if (!state.selectedSlot) return;
+    const card = rankSel.value + suitSel.value;
+    // prevent duplicates
+    if (Array.from(state.slotMap.values()).includes(card)){
+      alert('That card is already taken.');
+      return;
+    }
+    state.slotMap.set(keyFor(state.selectedSlot), card);
+    renderSlot(state.selectedSlot);
+    refreshTaken();
+  });
+
+  eraseBtn.addEventListener('click', ()=>{
+    if (!state.selectedSlot) return;
+    state.slotMap.delete(keyFor(state.selectedSlot));
+    renderSlot(state.selectedSlot);
+    refreshTaken();
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', ()=>{
+    state.slotMap.clear();
+    allSlots.forEach(renderSlot); refreshTaken();
+  });
+
+  /******************** Hand Evaluation (7-card) ********************/
+  // Returns an array score where higher is better when compared lexicographically.
+  // Format: [cat, t1, t2, t3, t4, t5] where cat is 8..0 per category
+  // 8 SF, 7 Quads, 6 FullHouse, 5 Flush, 4 Straight, 3 Trips, 2 TwoPair, 1 Pair, 0 HighCard
+  function evaluate7(cards){
+    // cards like ['A♠','K♦',...], length 7
+    const ranks = cards.map(c=>RANK_VAL[c[0]]).sort((a,b)=>b-a); // desc
+    const suits = cards.map(c=>c.slice(1));
+
+    // counts per rank
+    const countByRank = new Map();
+    for (const v of ranks) countByRank.set(v, (countByRank.get(v)||0)+1);
+    const groups = Array.from(countByRank.entries()).sort((a,b)=> b[1]-a[1] || b[0]-a[0]);
+    // suits count
+    const suitCount = new Map(); for(const s of suits) suitCount.set(s,(suitCount.get(s)||0)+1);
+
+    const uniqueRanksDesc = [...new Set(ranks)].sort((a,b)=>b-a);
+    // helper for straight highest value
+    function straightHigh(vals){
+      // vals desc & unique
+      let list = vals.slice();
+      // wheel A-5: treat A as 1 (value 14 -> 1)
+      if (list.includes(14)) list.push(1);
+      let run=1, best=0;
+      for (let i=0;i<list.length-1;i++){
+        if (list[i] - 1 === list[i+1]){ run++; best = Math.max(best, list[i+1]===1 ? 5 : list[i]); }
+        else if (list[i] !== list[i+1]) run=1;
+      }
+      // best holds top card of straight; return 0 if none
+      return best; // e.g., 5 for A-5, 14 for T-A straight would be 14
+    }
+
+    // Straight Flush check
+    let sfHigh = 0;
+    for (const [s,cnt] of suitCount){
+      if (cnt>=5){
+        const suited = cards.filter(x=>x.slice(1)===s).map(x=>RANK_VAL[x[0]]).sort((a,b)=>b-a);
+        const u = [...new Set(suited)].sort((a,b)=>b-a);
+        const sh = straightHigh(u);
+        if (sh>sfHigh) sfHigh=sh;
+      }
+    }
+    if (sfHigh){ return [8, sfHigh, 0,0,0,0]; }
+
+    // Quads, Trips, Pairs
+    const [topVal, topCnt] = groups[0];
+    const second = groups[1] || [0,0];
+    const kickersSorted = groups.filter(g=>g[0]!==topVal && g[0]!==second[0]).map(g=>g[0]).sort((a,b)=>b-a);
+
+    if (topCnt===4){
+      // [7, quadRank, kicker]
+      const kicker = Math.max(second[0]||0, kickersSorted[0]||0);
+      return [7, topVal, kicker,0,0,0];
+    }
+    if (topCnt===3 && second[1]>=2){
+      // Full house [6, tripsRank, pairRank]
+      return [6, topVal, second[0],0,0,0];
+    }
+
+    // Flush
+    for (const [s,cnt] of suitCount){
+      if (cnt>=5){
+        const suited = cards.filter(x=>x.slice(1)===s).map(x=>RANK_VAL[x[0]]).sort((a,b)=>b-a);
+        const top5 = suited.slice(0,5);
+        return [5, ...top5, ...Array(5-top5.length).fill(0)].slice(0,6);
+      }
+    }
+
+    // Straight
+    const st = straightHigh(uniqueRanksDesc);
+    if (st){ return [4, st,0,0,0,0]; }
+
+    if (topCnt===3){
+      // Trips + top two kickers
+      const ks = [second[0], ...(kickersSorted)].filter(Boolean).sort((a,b)=>b-a).slice(0,2);
+      return [3, topVal, ks[0]||0, ks[1]||0,0,0];
+    }
+
+    if (topCnt===2){
+      // Could be two pair or one pair
+      if (second[1]===2){
+        const highPair = Math.max(topVal, second[0]);
+        const lowPair = Math.min(topVal, second[0]);
+        const kicker = (groups[2]?.[0]) || kickersSorted[0] || 0;
+        return [2, highPair, lowPair, kicker,0,0];
+      } else {
+        // one pair
+        const ks = [second[0], ...(kickersSorted)].filter(Boolean).sort((a,b)=>b-a).slice(0,3);
+        return [1, topVal, ks[0]||0, ks[1]||0, ks[2]||0,0];
+      }
+    }
+
+    // High card: top five
+    const top5 = uniqueRanksDesc.slice(0,5);
+    return [0, ...top5, ...Array(5-top5.length).fill(0)].slice(0,6);
+  }
+
+  function compareScores(a,b){
+    for(let i=0;i<Math.max(a.length,b.length);i++){
+      const x=a[i]||0, y=b[i]||0; if (x!==y) return x>y?1:-1;
+    }
+    return 0;
+  }
+
+  /******************** Simulation ********************/
+  const statusEl = document.getElementById('status');
+  const winBar = document.getElementById('winBar');
+  const tieBar = document.getElementById('tieBar');
+  const loseBar = document.getElementById('loseBar');
+  const winPct = document.getElementById('winPct');
+  const tiePct = document.getElementById('tiePct');
+  const losePct = document.getElementById('losePct');
+
+  function updateBars(w,t,l){
+    const sum = Math.max(1, w+t+l);
+    const wp = Math.round(100*w/sum), tp = Math.round(100*t/sum), lp = 100 - wp - tp;
+    winBar.style.width = wp+"%"; tieBar.style.width = tp+"%"; loseBar.style.width = lp+"%";
+    winPct.textContent = wp+"%"; tiePct.textContent = tp+"%"; losePct.textContent = lp+"%";
+  }
+
+  function shuffleInPlace(arr){ for (let i=arr.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+
+  function getKnown(){
+    const hero = [state.slotMap.get('hero0'), state.slotMap.get('hero1')].filter(Boolean);
+    const board = ['board0','board1','board2','board3','board4'].map(k=>state.slotMap.get(k)).filter(Boolean);
+    return {hero, board};
+  }
+
+  function validateInputs(){
+    const {hero, board} = getKnown();
+    if (hero.length!==2) return "Please set both of your hole cards.";
+    if (new Set([...hero, ...board]).size !== hero.length + board.length) return "Duplicate cards detected.";
+    if (board.length>5) return "Too many board cards.";
+    return null;
+  }
+
+  async function runSimulation(){
+    const err = validateInputs();
+    if (err){ alert(err); return; }
+
+    const opponents = Math.min(8, Math.max(1, parseInt(document.getElementById('opponents').value||'1',10)));
+    const trials = Math.min(20000, Math.max(500, parseInt(document.getElementById('trials').value||'5000',10)));
+
+    const {hero, board} = getKnown();
+    const initialDeck = makeDeck();
+    // remove known
+    const remaining = initialDeck.filter(c=> ![...hero, ...board].includes(c));
+
+    const needBoard = 5 - board.length;
+    const needOppCards = opponents * 2;
+
+    let wins=0, ties=0, losses=0;
+
+    statusEl.textContent = `Running ${trials.toLocaleString()} trials vs ${opponents} opponent(s)...`;
+    document.getElementById('runBtn').disabled = true;
+
+    // Chunk the loop to keep UI responsive
+    const CHUNK = 250;
+    for (let start=0; start<trials; start+=CHUNK){
+      const end = Math.min(trials, start+CHUNK);
+      for (let t=start; t<end; t++){
+        // draw random sample without replacement via shuffle copy
+        const deck = shuffleInPlace(remaining.slice());
+        let idx = 0;
+        const boardDrawn = board.slice();
+        for (let i=0;i<needBoard;i++) boardDrawn.push(deck[idx++]);
+
+        const hero7 = [...hero, ...boardDrawn]; // length 7
+        const heroScore = evaluate7(hero7);
+
+        let bestCmp = 1; // assume hero best initially
+        let tieCount = 0;
+
+        // deal opponents
+        for (let p=0;p<opponents;p++){
+          const opp = [deck[idx++], deck[idx++]];
+          const opp7 = [...opp, ...boardDrawn];
+          const oppScore = evaluate7(opp7);
+          const cmp = compareScores(oppScore, heroScore);
+          if (cmp>0){ bestCmp = -1; break; } // someone beats hero outright
+          if (cmp===0) tieCount++;
+        }
+        if (bestCmp===-1) losses++;
+        else if (tieCount>0) ties++;
+        else wins++;
+      }
+      updateBars(wins, ties, losses);
+      await new Promise(r=>setTimeout(r, 0));
+    }
+
+    updateBars(wins, ties, losses);
+    const total = wins+ties+losses;
+    statusEl.textContent = `Done: ${total.toLocaleString()} trials. Win ${Math.round(100*wins/total)}% · Tie ${Math.round(100*ties/total)}% · Lose ${Math.round(100*losses/total)}%`;
+    document.getElementById('runBtn').disabled = false;
+  }
+
+  document.getElementById('runBtn').addEventListener('click', runSimulation);
+  </script>
+</body>
+</html>
