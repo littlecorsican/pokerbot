@@ -1,0 +1,237 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f4c3a, #1a5f4a);
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.poker-table {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #0d3b2e;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 3px solid #2d5a4a;
+}
+
+.poker-table h1 {
+  color: #f4e4bc;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.poker-table h2 {
+  color: #e8d5a3;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Community Cards Section */
+.community-cards-section {
+  margin-bottom: 40px;
+}
+
+.community-cards {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Player Cards Section */
+.player-cards-section {
+  margin-bottom: 30px;
+}
+
+.player-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Card Container */
+.card-container {
+  position: relative;
+}
+
+/* Card Styles */
+.card {
+  width: 80px;
+  height: 120px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.selected-card {
+  background: white;
+  border: 2px solid #333;
+  color: #333;
+}
+
+.empty-card {
+  background: #2d5a4a;
+  border: 2px dashed #4a7c6a;
+  color: #4a7c6a;
+}
+
+.empty-card:hover {
+  background: #3a6b5a;
+  border-color: #5a8c7a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.card-placeholder {
+  font-size: 2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.card-rank {
+  font-size: 1.2rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.card-suit {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* Suit Colors */
+.selected-card .card-suit:contains("♥"),
+.selected-card .card-suit:contains("♦") {
+  color: #d32f2f;
+}
+
+/* Dropdown Styles */
+.card-dropdown {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  max-width: 95vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  border: 3px solid #2d5a4a;
+  min-width: 850px;
+}
+
+.dropdown-header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2d5a4a;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap: 6px;
+  margin-bottom: 20px;
+  max-height: 500px;
+  overflow-y: auto;
+  min-width: 800px;
+}
+
+.dropdown-card {
+  width: 60px;
+  height: 90px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.dropdown-card:hover {
+  background: #f0f0f0;
+  border-color: #2d5a4a;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-card .card-rank {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.dropdown-card .card-suit {
+  font-size: 1.2rem;
+}
+
+.close-dropdown {
+  background: #2d5a4a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+  display: block;
+  margin: 0 auto;
+}
+
+.close-dropdown:hover {
+  background: #1a3d2e;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .poker-table {
+    padding: 20px;
+  }
+  
+  .poker-table h1 {
+    font-size: 2rem;
+  }
+  
+  .card {
+    width: 70px;
+    height: 105px;
+  }
+  
+  .card-dropdown {
+    min-width: 95vw;
+    max-width: 95vw;
+  }
+  
+  .dropdown-grid {
+    grid-template-columns: repeat(8, 1fr);
+    min-width: auto;
+  }
+  
+  .dropdown-card {
+    width: 50px;
+    height: 75px;
+    font-size: 0.8rem;
+  }
+}
