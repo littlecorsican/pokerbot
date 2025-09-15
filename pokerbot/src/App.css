@@ -16,11 +16,48 @@
   border: 3px solid #2d5a4a;
 }
 
+/* Table Header */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
 .poker-table h1 {
   color: #f4e4bc;
   font-size: 2.5rem;
-  margin-bottom: 30px;
+  margin: 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Clear Button */
+.clear-button {
+  background: #d32f2f;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.clear-button:hover {
+  background: #b71c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.clear-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .poker-table h2 {
@@ -204,14 +241,105 @@
   background: #1a3d2e;
 }
 
+/* Current Hand Display */
+.current-hand-section {
+  margin-bottom: 30px;
+}
+
+.current-hand-display {
+  background: #2d5a4a;
+  border: 2px solid #4a7c6a;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #f4e4bc;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Probability Display */
+.probability-section {
+  margin-bottom: 30px;
+}
+
+.probability-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.probability-item {
+  background: #2d5a4a;
+  border: 1px solid #4a7c6a;
+  border-radius: 8px;
+  padding: 12px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.probability-item:hover {
+  background: #3a6b5a;
+  border-color: #5a8c7a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hand-name {
+  color: #e8d5a3;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.probability-value {
+  color: #f4e4bc;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Highlight high probability hands */
+.probability-item:nth-child(1) .probability-value,
+.probability-item:nth-child(2) .probability-value {
+  color: #ffd700;
+}
+
+.probability-item:nth-child(3) .probability-value,
+.probability-item:nth-child(4) .probability-value {
+  color: #ff6b6b;
+}
+
+.probability-item:nth-child(5) .probability-value,
+.probability-item:nth-child(6) .probability-value {
+  color: #4ecdc4;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .poker-table {
     padding: 20px;
   }
   
+  .table-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  
   .poker-table h1 {
     font-size: 2rem;
+  }
+  
+  .clear-button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
   }
   
   .card {
@@ -233,5 +361,27 @@
     width: 50px;
     height: 75px;
     font-size: 0.8rem;
+  }
+  
+  .current-hand-display {
+    font-size: 1.2rem;
+    padding: 12px;
+  }
+  
+  .probability-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .probability-item {
+    padding: 10px 12px;
+  }
+  
+  .hand-name {
+    font-size: 0.9rem;
+  }
+  
+  .probability-value {
+    font-size: 1rem;
   }
 }

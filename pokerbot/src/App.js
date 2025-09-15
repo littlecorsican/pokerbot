@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import { calculatePokerHandProbabilities, getCurrentHandStrength } from './services/calculate_rank';
 
 function App() {
   // Card ranks and suits
@@ -27,6 +28,50 @@ function App() {
   // State for dropdown visibility
   const [showDropdown, setShowDropdown] = useState(null);
 
+  // State for poker hand probabilities
+  const [probabilities, setProbabilities] = useState({
+    royalFlush: 0,
+    straightFlush: 0,
+    fourOfAKind: 0,
+    fullHouse: 0,
+    flush: 0,
+    straight: 0,
+    threeOfAKind: 0,
+    twoPair: 0,
+    pair: 0,
+    highCard: 0
+  });
+
+  // State for current hand strength
+  const [currentHand, setCurrentHand] = useState('No cards selected');
+
+  // Effect to calculate probabilities when cards change
+  useEffect(() => {
+    try {
+      const newProbabilities = calculatePokerHandProbabilities(communityCards, playerCards);
+      setProbabilities(newProbabilities);
+      
+      const newCurrentHand = getCurrentHandStrength(communityCards, playerCards);
+      setCurrentHand(newCurrentHand);
+    } catch (error) {
+      console.error('Error calculating probabilities:', error);
+      // Reset to default values on error
+      setProbabilities({
+        royalFlush: 0,
+        straightFlush: 0,
+        fourOfAKind: 0,
+        fullHouse: 0,
+        flush: 0,
+        straight: 0,
+        threeOfAKind: 0,
+        twoPair: 0,
+        pair: 0,
+        highCard: 0
+      });
+      setCurrentHand('Error calculating hand');
+    }
+  }, [communityCards, playerCards]);
+
   // Function to handle card selection
   const handleCardSelect = (card, cardIndex, cardType) => {
     if (cardType === 'community') {
@@ -44,6 +89,13 @@ function App() {
   // Function to handle card click
   const handleCardClick = (cardIndex, cardType) => {
     setShowDropdown(`${cardType}-${cardIndex}`);
+  };
+
+  // Function to clear all cards
+  const handleClearAll = () => {
+    setCommunityCards([null, null, null, null, null]);
+    setPlayerCards([null, null]);
+    setShowDropdown(null);
   };
 
   // Function to render a card
@@ -102,7 +154,12 @@ function App() {
   return (
     <div className="App">
       <div className="poker-table">
-        <h1>Poker Table</h1>
+        <div className="table-header">
+          <h1>Poker Table</h1>
+          <button className="clear-button" onClick={handleClearAll}>
+            Clear All Cards
+          </button>
+        </div>
         
         {/* Community Cards (5 cards on table) */}
         <div className="community-cards-section">
@@ -125,6 +182,61 @@ function App() {
                 {renderCard(card, index, 'player')}
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Current Hand Display */}
+        <div className="current-hand-section">
+          <h2>Current Hand</h2>
+          <div className="current-hand-display">
+            {currentHand}
+          </div>
+        </div>
+
+        {/* Probability Display */}
+        <div className="probability-section">
+          <h2>Hand Probabilities</h2>
+          <div className="probability-grid">
+            <div className="probability-item">
+              <span className="hand-name">Royal Flush</span>
+              <span className="probability-value">{probabilities.royalFlush}%</span>
+            </div>
+            <div className="probability-item">
+              <span className="hand-name">Straight Flush</span>
+              <span className="probability-value">{probabilities.straightFlush}%</span>
+            </div>
+            <div className="probability-item">
+              <span className="hand-name">Four of a Kind</span>
+              <span className="probability-value">{probabilities.fourOfAKind}%</span>
+            </div>
+            <div className="probability-item">
+              <span className="hand-name">Full House</span>
+              <span className="probability-value">{probabilities.fullHouse}%</span>
+            </div>
+            <div className="probability-item">
+              <span className="hand-name">Flush</span>
+              <span className="probability-value">{probabilities.flush}%</span>
+            </div>
+            <div className="probability-item">
+              <span className="hand-name">Straight</span>
+              <span className="probability-value">{probabilities.straight}%</span>
+            </div>
+            <div className="probability-item">
+              <span className="hand-name">Three of a Kind</span>
+              <span className="probability-value">{probabilities.threeOfAKind}%</span>
+            </div>
+            <div className="probability-item">
+              <span className="hand-name">Two Pair</span>
+              <span className="probability-value">{probabilities.twoPair}%</span>
+            </div>
+            <div className="probability-item">
+              <span className="hand-name">Pair</span>
+              <span className="probability-value">{probabilities.pair}%</span>
+            </div>
+            <div className="probability-item">
+              <span className="hand-name">High Card</span>
+              <span className="probability-value">{probabilities.highCard}%</span>
+            </div>
           </div>
         </div>
 
