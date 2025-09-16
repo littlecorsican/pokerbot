@@ -18,28 +18,7 @@ export default class Deck {
         });
       });
     }
-  
-    // Shuffle the deck using Fisher-Yates algorithm
-    shuffle() {
-      for (let i = this.cards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
-      }
-    }
-  
-    // Deal a card from the top of the deck
-    dealCard() {
-      return this.cards.pop();
-    }
-  
-    // Deal multiple cards
-    dealCards(count) {
-      const dealtCards = [];
-      for (let i = 0; i < count && this.cards.length > 0; i++) {
-        dealtCards.push(this.dealCard());
-      }
-      return dealtCards;
-    }
+
   
     // Get the number of cards remaining in the deck
     getRemainingCount() {

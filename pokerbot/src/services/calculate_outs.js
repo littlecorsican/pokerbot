@@ -1,15 +1,38 @@
+import Table from '../models/table';
+
 import Card from '../models/card';
-import Hole from '../models/hole';
-import Community from '../models/community';
-import Deck from '../models/deck';
-
-
 
 export const calculateOuts = () => {
-    const deck = new Deck();
-    const hole = new Hole();
-    const community = new Community();
-
-    deck.initializeDeck();
-    console.log(deck.cards);
+    const table = new Table();
+    
+    // Create specific cards: 2, 4, 6 for community
+    const communityCards = [
+        new Card('2', '♠'),
+        new Card('4', '♠'), 
+        new Card('6', '♠')
+    ];
+    
+    // Add community cards and remove from deck
+    table.community.addCard(communityCards[0], 0); // 2
+    table.community.addCard(communityCards[1], 1); // 4
+    table.community.addCard(communityCards[2], 2); // 6
+    table.deck.removeCards(communityCards);
+    
+    // Create specific cards: 3, 10 for hole
+    const holeCards = [
+        new Card('3', '♠'),
+        new Card('10', '♠')
+    ];
+    
+    // Add hole cards and remove from dec
+    table.hole.addCard(holeCards[0], 0); // 3
+    table.hole.addCard(holeCards[1], 1); // 10
+    table.deck.removeCards(holeCards);
+    
+    console.log('Hole Cards:', holeCards);
+    console.log('Community Cards:', communityCards);
+    console.log('All Cards on Table:', table.getAllCards());
+    console.log('Table State:', table.getTableState());
+    
+    return table;
 }
