@@ -133,6 +133,95 @@ function getBestHand(cards) {
   return HAND_RANKINGS.HIGH_CARD;
 }
 
+// Function to calculate outs for each hand type
+function calculateOuts(communityCards, userCards) {
+  const validCommunityCards = communityCards.filter(card => card !== null);
+  const validUserCards = userCards.filter(card => card !== null);
+  
+  if (validCommunityCards.length === 0 || validUserCards.length === 0) {
+    return {
+      royalFlush: [],
+      straightFlush: [],
+      fourOfAKind: [],
+      fullHouse: [],
+      flush: [],
+      straight: [],
+      threeOfAKind: [],
+      twoPair: [],
+      pair: [],
+      highCard: []
+    };
+  }
+  
+  const allCards = [...validCommunityCards, ...validUserCards];
+  const usedCardIds = allCards.map(card => `${card.rank}${card.suit}`);
+  
+  // Generate all remaining cards
+  const remainingCards = [];
+  SUITS.forEach(suit => {
+    RANKS.forEach(rank => {
+      const cardId = `${rank}${suit}`;
+      if (!usedCardIds.includes(cardId)) {
+        remainingCards.push({ rank, suit });
+      }
+    });
+  });
+  
+  const outs = {
+    royalFlush: [],
+    straightFlush: [],
+    fourOfAKind: [],
+    fullHouse: [],
+    flush: [],
+    straight: [],
+    threeOfAKind: [],
+    twoPair: [],
+    pair: [],
+    highCard: []
+  };
+  
+  // Calculate outs for each hand type
+  remainingCards.forEach(card => {
+    const testCards = [...allCards, card];
+    const handRank = getBestHand(testCards);
+    
+    switch (handRank) {
+      case HAND_RANKINGS.ROYAL_FLUSH:
+        outs.royalFlush.push(card);
+        break;
+      case HAND_RANKINGS.STRAIGHT_FLUSH:
+        outs.straightFlush.push(card);
+        break;
+      case HAND_RANKINGS.FOUR_OF_A_KIND:
+        outs.fourOfAKind.push(card);
+        break;
+      case HAND_RANKINGS.FULL_HOUSE:
+        outs.fullHouse.push(card);
+        break;
+      case HAND_RANKINGS.FLUSH:
+        outs.flush.push(card);
+        break;
+      case HAND_RANKINGS.STRAIGHT:
+        outs.straight.push(card);
+        break;
+      case HAND_RANKINGS.THREE_OF_A_KIND:
+        outs.threeOfAKind.push(card);
+        break;
+      case HAND_RANKINGS.TWO_PAIR:
+        outs.twoPair.push(card);
+        break;
+      case HAND_RANKINGS.PAIR:
+        outs.pair.push(card);
+        break;
+      case HAND_RANKINGS.HIGH_CARD:
+        outs.highCard.push(card);
+        break;
+    }
+  });
+  
+  return outs;
+}
+
 // Main function to calculate poker hand probabilities
 export function calculatePokerHandProbabilities(communityCards, userCards) {
   // Validate input
@@ -154,16 +243,30 @@ export function calculatePokerHandProbabilities(communityCards, userCards) {
   
   if (validCommunityCards.length === 0 || validUserCards.length === 0) {
     return {
-      royalFlush: 0,
-      straightFlush: 0,
-      fourOfAKind: 0,
-      fullHouse: 0,
-      flush: 0,
-      straight: 0,
-      threeOfAKind: 0,
-      twoPair: 0,
-      pair: 0,
-      highCard: 0
+      probabilities: {
+        royalFlush: 0,
+        straightFlush: 0,
+        fourOfAKind: 0,
+        fullHouse: 0,
+        flush: 0,
+        straight: 0,
+        threeOfAKind: 0,
+        twoPair: 0,
+        pair: 0,
+        highCard: 0
+      },
+      outs: {
+        royalFlush: [],
+        straightFlush: [],
+        fourOfAKind: [],
+        fullHouse: [],
+        flush: [],
+        straight: [],
+        threeOfAKind: [],
+        twoPair: [],
+        pair: [],
+        highCard: []
+      }
     };
   }
   
@@ -188,7 +291,7 @@ export function calculatePokerHandProbabilities(communityCards, userCards) {
   if (cardsToDeal <= 0) {
     // All community cards are already dealt, just evaluate current hand
     const currentHand = getBestHand([...validCommunityCards, ...validUserCards]);
-    const result = {
+    const probabilities = {
       royalFlush: 0,
       straightFlush: 0,
       fourOfAKind: 0,
@@ -201,18 +304,21 @@ export function calculatePokerHandProbabilities(communityCards, userCards) {
       highCard: 0
     };
     
-    if (currentHand === HAND_RANKINGS.ROYAL_FLUSH) result.royalFlush = 100;
-    else if (currentHand === HAND_RANKINGS.STRAIGHT_FLUSH) result.straightFlush = 100;
-    else if (currentHand === HAND_RANKINGS.FOUR_OF_A_KIND) result.fourOfAKind = 100;
-    else if (currentHand === HAND_RANKINGS.FULL_HOUSE) result.fullHouse = 100;
-    else if (currentHand === HAND_RANKINGS.FLUSH) result.flush = 100;
-    else if (currentHand === HAND_RANKINGS.STRAIGHT) result.straight = 100;
-    else if (currentHand === HAND_RANKINGS.THREE_OF_A_KIND) result.threeOfAKind = 100;
-    else if (currentHand === HAND_RANKINGS.TWO_PAIR) result.twoPair = 100;
-    else if (currentHand === HAND_RANKINGS.PAIR) result.pair = 100;
-    else result.highCard = 100;
+    if (currentHand === HAND_RANKINGS.ROYAL_FLUSH) probabilities.royalFlush = 100;
+    else if (currentHand === HAND_RANKINGS.STRAIGHT_FLUSH) probabilities.straightFlush = 100;
+    else if (currentHand === HAND_RANKINGS.FOUR_OF_A_KIND) probabilities.fourOfAKind = 100;
+    else if (currentHand === HAND_RANKINGS.FULL_HOUSE) probabilities.fullHouse = 100;
+    else if (currentHand === HAND_RANKINGS.FLUSH) probabilities.flush = 100;
+    else if (currentHand === HAND_RANKINGS.STRAIGHT) probabilities.straight = 100;
+    else if (currentHand === HAND_RANKINGS.THREE_OF_A_KIND) probabilities.threeOfAKind = 100;
+    else if (currentHand === HAND_RANKINGS.TWO_PAIR) probabilities.twoPair = 100;
+    else if (currentHand === HAND_RANKINGS.PAIR) probabilities.pair = 100;
+    else probabilities.highCard = 100;
     
-    return result;
+    // Calculate outs for current situation
+    const outs = calculateOuts(communityCards, userCards);
+    
+    return { probabilities, outs };
   }
   
   // Generate all possible combinations of remaining cards
@@ -272,14 +378,17 @@ export function calculatePokerHandProbabilities(communityCards, userCards) {
   
   // Convert counts to percentages
   const totalCombinations = combinations.length;
-  const result = {};
+  const probabilities = {};
   
   Object.keys(handCounts).forEach(hand => {
-    result[hand] = totalCombinations > 0 ? 
+    probabilities[hand] = totalCombinations > 0 ? 
       Math.round((handCounts[hand] / totalCombinations) * 100 * 100) / 100 : 0;
   });
   
-  return result;
+  // Calculate outs for current situation
+  const outs = calculateOuts(communityCards, userCards);
+  
+  return { probabilities, outs };
 }
 
 // Helper function to generate combinations

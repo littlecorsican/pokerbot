@@ -324,6 +324,90 @@
   color: #4ecdc4;
 }
 
+/* Outs Display */
+.outs-section {
+  margin-bottom: 30px;
+}
+
+.outs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.outs-item {
+  background: #2d5a4a;
+  border: 1px solid #4a7c6a;
+  border-radius: 10px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.outs-item:hover {
+  background: #3a6b5a;
+  border-color: #5a8c7a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.outs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #4a7c6a;
+}
+
+.outs-count {
+  color: #f4e4bc;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: #1a3d2e;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.outs-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 40px;
+  align-items: flex-start;
+}
+
+.outs-card {
+  width: 50px;
+  height: 75px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.outs-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.outs-card .card-rank {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.outs-card .card-suit {
+  font-size: 1rem;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .poker-table {
@@ -386,5 +470,38 @@
   
   .probability-value {
     font-size: 1rem;
+  }
+  
+  .outs-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .outs-item {
+    padding: 12px;
+  }
+  
+  .outs-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .outs-cards {
+    gap: 4px;
+  }
+  
+  .outs-card {
+    width: 45px;
+    height: 68px;
+    font-size: 0.7rem;
+  }
+  
+  .outs-card .card-rank {
+    font-size: 0.8rem;
+  }
+  
+  .outs-card .card-suit {
+    font-size: 0.9rem;
   }
 }
