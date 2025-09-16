@@ -6,6 +6,8 @@ function App() {
   // Card ranks and suits
   const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
   const suits = ['♠', '♥', '♦', '♣'];
+  const red = ['♥', '♦'];
+  const black = ['♠', '♣'];
   
   // Generate all possible cards
   const allCards = [];
@@ -101,10 +103,11 @@ function App() {
   // Function to render a card
   const renderCard = (card, cardIndex, cardType) => {
     if (card) {
+      const isRedSuit = red.includes(card.suit);
       return (
         <div className="card selected-card">
-          <div className="card-rank">{card.rank}</div>
-          <div className="card-suit">{card.suit}</div>
+          <div className={`card-rank ${isRedSuit ? 'red-suit' : 'black-suit'}`}>{card.rank}</div>
+          <div className={`card-suit ${isRedSuit ? 'red-suit' : 'black-suit'}`}>{card.suit}</div>
         </div>
       );
     } else {
@@ -130,16 +133,19 @@ function App() {
       <div className="card-dropdown">
         <div className="dropdown-header">Select a Card</div>
         <div className="dropdown-grid">
-          {allCards.map(card => (
-            <div
-              key={card.id}
-              className="dropdown-card"
-              onClick={() => handleCardSelect(card, cardIndexNum, cardType)}
-            >
-              <div className="card-rank">{card.rank}</div>
-              <div className="card-suit">{card.suit}</div>
-            </div>
-          ))}
+          {allCards.map(card => {
+            const isRedSuit = red.includes(card.suit);
+            return (
+              <div
+                key={card.id}
+                className="dropdown-card"
+                onClick={() => handleCardSelect(card, cardIndexNum, cardType)}
+              >
+                <div className={`card-rank ${isRedSuit ? 'red-suit' : 'black-suit'}`}>{card.rank}</div>
+                <div className={`card-suit ${isRedSuit ? 'red-suit' : 'black-suit'}`}>{card.suit}</div>
+              </div>
+            );
+          })}
         </div>
         <button 
           className="close-dropdown"

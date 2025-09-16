@@ -151,9 +151,12 @@
 }
 
 /* Suit Colors */
-.selected-card .card-suit:contains("♥"),
-.selected-card .card-suit:contains("♦") {
+.red-suit {
   color: #d32f2f;
+}
+
+.black-suit {
+  color: #333;
 }
 
 /* Dropdown Styles */
