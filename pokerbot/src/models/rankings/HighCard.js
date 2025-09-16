@@ -30,4 +30,35 @@ export default class HighCard {
     // This would typically be checked after all other hand types
     return true; // Simplified for this example
   }
+
+  // Get remaining cards needed to form high card hands
+  getRemaining(existingCards) {
+    // If we already have a high card hand, return true
+    if (this.isHighCard(existingCards)) {
+      return true;
+    }
+
+    const possibleCombinations = this.getPossibleCards();
+    const existingCardIds = existingCards.map(card => `${card.rank}${card.suit}`);
+    
+    const remainingNeeded = [];
+    
+    // Loop through all possible combinations
+    possibleCombinations.forEach(combination => {
+      const neededCards = combination.filter(card => 
+        !existingCardIds.includes(`${card.rank}${card.suit}`)
+      );
+      
+      if (neededCards.length > 0) {
+        remainingNeeded.push({
+          needed: neededCards.length,
+          cards: neededCards,
+          combination: combination
+        });
+      }
+    });
+    
+    // Sort by number of cards needed (ascending)
+    return remainingNeeded.sort((a, b) => a.needed - b.needed);
+  }
 }

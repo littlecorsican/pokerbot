@@ -52,4 +52,35 @@ export default class TwoPair {
     
     return pairCount === 2;
   }
+
+  // Get remaining cards needed to form two pairs
+  getRemaining(existingCards) {
+    // If we already have two pair, return true
+    if (this.isTwoPair(existingCards)) {
+      return true;
+    }
+
+    const possibleCombinations = this.getPossibleCards();
+    const existingCardIds = existingCards.map(card => `${card.rank}${card.suit}`);
+    
+    const remainingNeeded = [];
+    
+    // Loop through all possible combinations
+    possibleCombinations.forEach(combination => {
+      const neededCards = combination.filter(card => 
+        !existingCardIds.includes(`${card.rank}${card.suit}`)
+      );
+      
+      if (neededCards.length > 0) {
+        remainingNeeded.push({
+          needed: neededCards.length,
+          cards: neededCards,
+          combination: combination
+        });
+      }
+    });
+    
+    // Sort by number of cards needed (ascending)
+    return remainingNeeded.sort((a, b) => a.needed - b.needed);
+  }
 }

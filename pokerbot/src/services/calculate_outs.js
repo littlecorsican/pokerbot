@@ -1,5 +1,5 @@
 import Table from '../models/table';
-import { Flush, Straight } from '../models/rankings';
+import { Flush, Straight } from '../models/rankings/index';
 import Card from '../models/card';
 
 export const calculateOuts = () => {
@@ -36,6 +36,9 @@ export const calculateOuts = () => {
     console.log('Table State:', table.getTableState());
     console.log('Flush:', new Flush().isFlush(table.getHandCards()));
     console.log('Straight:', new Straight().isStraight(table.getHandCards()));
+
+    console.log('Flush:', new Flush().getRemaining(table.getHandCards()));
+    console.log('Straight:', new Straight().getRemaining(table.getHandCards()));
     
     return table;
 }
