@@ -1,5 +1,5 @@
 import Table from '../models/table';
-
+import Flush from '../models/rankings/Flush';
 import Card from '../models/card';
 
 export const calculateOuts = () => {
@@ -32,7 +32,10 @@ export const calculateOuts = () => {
     console.log('Hole Cards:', holeCards);
     console.log('Community Cards:', communityCards);
     console.log('All Cards on Table:', table.getAllCards());
+    console.log('All Cards at Hand:', table.getHandCards());
     console.log('Table State:', table.getTableState());
+    console.log('Flush:', new Flush().getPossibleCards());
+    console.log('Flush:', new Flush().isFlush(table.getHandCards()));
     
     return table;
 }
