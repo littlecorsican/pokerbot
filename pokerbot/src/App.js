@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { calculatePokerHandProbabilities, getCurrentHandStrength } from './services/calculate_rank';
+import { calculateOuts } from './services/calculate_outs';
 
 function App() {
   // Card ranks and suits
@@ -8,6 +9,10 @@ function App() {
   const suits = ['♠', '♥', '♦', '♣'];
   const red = ['♥', '♦'];
   const black = ['♠', '♣'];
+
+  useEffect(() => {
+    calculateOuts();
+  }, []);
   
   // Generate all possible cards
   const allCards = [];
