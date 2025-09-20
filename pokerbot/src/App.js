@@ -15,6 +15,7 @@ function App() {
   useEffect(() => {
     const table = calculateOuts();
     console.log("table", table);
+    setTableData(table);
   }, []);
   
   // Generate all possible cards
@@ -65,6 +66,9 @@ function App() {
     pair: [],
     highCard: []
   });
+
+  // State for table data
+  const [tableData, setTableData] = useState(null);
 
   // State for current hand strength
   const [currentHand, setCurrentHand] = useState('No cards selected');
@@ -239,7 +243,7 @@ function App() {
         <ProbabilitySection probabilities={probabilities} />
 
         {/* Outs Display */}
-        <OutsSection outs={outs} />
+        <OutsSection outs={outs} tableData={tableData} />
 
         {/* Card Selection Dropdown */}
         {renderDropdown()}

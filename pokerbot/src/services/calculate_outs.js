@@ -49,5 +49,11 @@ export const calculateOuts = () => {
         remaining: new Straight().getRemaining(table.getHandCards())
     }
     
+    // Add ranking attribute as an object
+    table.ranking = {
+        flush: new Flush(),
+        straight: new Straight()
+    }
+    
     return table;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const OutsSection = ({ outs }) => {
+const OutsSection = ({ outs, tableData }) => {
   // Function to render outs cards
   const renderOutsCard = (card) => {
     const red = ['♥', '♦'];
@@ -11,6 +11,71 @@ const OutsSection = ({ outs }) => {
         <div className={`card-suit ${isRedSuit ? 'red-suit' : 'black-suit'}`}>{card.suit}</div>
       </div>
     );
+  };
+
+  // Function to render ranking status
+  const renderRankingStatus = (handType) => {
+    if (!tableData || !tableData.rank || !tableData.rank[handType]) {
+      return null;
+    }
+
+    const rankData = tableData.rank[handType];
+    
+    if (rankData.isTrue) {
+      return (
+        <div className="ranking-status achieved">
+          <div className="achieved-icon">🎉</div>
+          <span className="status-text">
+            <strong>{handType.charAt(0).toUpperCase() + handType.slice(1)} Achieved!</strong>
+          </span>
+        </div>
+      );
+    } else if (rankData.remaining && Array.isArray(rankData.remaining)) {
+      const totalOuts = rankData.remaining.reduce((sum, item) => sum + item.needed, 0);
+      
+      return (
+        <div className="ranking-remaining">
+          <div className="remaining-summary">
+            <span className="total-outs">
+              <strong>{totalOuts} total outs</strong> • {rankData.remaining.length} combination{rankData.remaining.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+          <div className="remaining-cards">
+            {rankData.remaining.map((item, index) => (
+              <div key={index} className="remaining-group">
+                <div className="remaining-info">
+                  <span className="needed-count">
+                    <strong>{item.needed} card{item.needed !== 1 ? 's' : ''} needed:</strong>
+                  </span>
+                </div>
+                <div className="remaining-cards-list">
+                  {item.cards && item.cards.map((card, cardIndex) => {
+                    const red = ['♥', '♦'];
+                    const isRedSuit = red.includes(card.suit);
+                    return (
+                      <div key={cardIndex} className="remaining-card mini-card">
+                        <div className="card-inner">
+                          <div className="card-top">
+                            <div className={`card-rank ${isRedSuit ? 'red-suit' : 'black-suit'}`}>
+                              {card.rank}
+                            </div>
+                            <div className={`card-suit ${isRedSuit ? 'red-suit' : 'black-suit'}`}>
+                              {card.suit}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    
+    return null;
   };
 
   return (
@@ -56,19 +121,33 @@ const OutsSection = ({ outs }) => {
         <div className="outs-item">
           <div className="outs-header">
             <span className="hand-name">Flush</span>
-            <span className="outs-count">({outs.flush.length} cards)</span>
+            {tableData && tableData.rank && tableData.rank.flush ? (
+              <span className="outs-count">
+                {tableData.rank.flush.isTrue ? 'Achieved!' : 
+                 `${tableData.rank.flush.remaining.reduce((sum, item) => sum + item.needed, 0)} outs`}
+              </span>
+            ) : (
+              <span className="outs-count">({outs.flush.length} cards)</span>
+            )}
           </div>
           <div className="outs-cards">
-            {outs.flush.map(renderOutsCard)}
+            {renderRankingStatus('flush') || outs.flush.map(renderOutsCard)}
           </div>
         </div>
         <div className="outs-item">
           <div className="outs-header">
             <span className="hand-name">Straight</span>
-            <span className="outs-count">({outs.straight.length} cards)</span>
+            {tableData && tableData.rank && tableData.rank.straight ? (
+              <span className="outs-count">
+                {tableData.rank.straight.isTrue ? 'Achieved!' : 
+                 `${tableData.rank.straight.remaining.reduce((sum, item) => sum + item.needed, 0)} outs`}
+              </span>
+            ) : (
+              <span className="outs-count">({outs.straight.length} cards)</span>
+            )}
           </div>
           <div className="outs-cards">
-            {outs.straight.map(renderOutsCard)}
+            {renderRankingStatus('straight') || outs.straight.map(renderOutsCard)}
           </div>
         </div>
         <div className="outs-item">
