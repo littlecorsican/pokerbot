@@ -61,8 +61,31 @@ export default class HighCard {
     // Sort by number of cards needed (ascending)
     const sorted = remainingNeeded.sort((a, b) => a.needed - b.needed);
     
-    // Keep only entries with the lowest "needed" count
-    const minNeeded = sorted[0]?.needed;
-    return sorted.filter(item => item.needed === minNeeded);
+    // Group by ranks needed (ignoring suits) and fill suits as "*"
+    const grouped = new Map();
+    
+    sorted.forEach(item => {
+      // Create a key based on ranks only (ignoring suits)
+      const rankKey = item.cards.map(card => card.rank).sort().join(',');
+      
+      if (!grouped.has(rankKey)) {
+        // Fill suits as "*" for the first occurrence
+        const cardsWithWildcardSuits = item.cards.map(card => ({
+          rank: card.rank,
+          suit: '*'
+        }));
+        
+        grouped.set(rankKey, {
+          needed: item.needed,
+          cards: cardsWithWildcardSuits,
+          combination: item.combination
+        });
+      }
+    });
+    
+    // Convert back to array and keep only entries with the lowest "needed" count
+    const result = Array.from(grouped.values());
+    const minNeeded = result[0]?.needed;
+    return result.filter(item => item.needed === minNeeded);
   }
 }
