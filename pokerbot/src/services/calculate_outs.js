@@ -1,5 +1,5 @@
 import Table from '../models/table';
-import { Flush, Straight } from '../models/rankings/index';
+import { Flush, Straight, Pair, TwoPair } from '../models/rankings/index';
 import Card from '../models/card';
 
 export const calculateOuts = () => {
@@ -40,6 +40,9 @@ export const calculateOuts = () => {
     console.log('Flush:', new Flush().getRemaining(table.getHandCards()));
     console.log('Straight:', new Straight().getRemaining(table.getHandCards()));
 
+    console.log('Pair:', new Pair().isPair(table.getHandCards()));
+    console.log('Pair:', new Pair().getRemaining(table.getHandCards()));
+    
     table.rank.flush = {
         isTrue: new Flush().isFlush(table.getHandCards()),
         remaining: new Flush().getRemaining(table.getHandCards())
@@ -48,12 +51,23 @@ export const calculateOuts = () => {
         isTrue: new Straight().isStraight(table.getHandCards()),
         remaining: new Straight().getRemaining(table.getHandCards())
     }
+    table.rank.pair = {
+        isTrue: new Pair().isPair(table.getHandCards()),
+        remaining: new Pair().getRemaining(table.getHandCards())
+    }
+    table.rank.twoPair = {
+        isTrue: new TwoPair().isTwoPair(table.getHandCards()),
+        remaining: new TwoPair().getRemaining(table.getHandCards())
+    }
+
     
     // Add ranking attribute as an object
-    table.ranking = {
-        flush: new Flush(),
-        straight: new Straight()
-    }
+    // table.ranking = {
+    //     flush: new Flush(),
+    //     straight: new Straight(),
+    //     pair: new Pair(),
+    //     two_pair: new TwoPair(),
+    // }
     
     return table;
 }

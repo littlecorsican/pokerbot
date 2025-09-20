@@ -1,6 +1,20 @@
 import React from 'react';
 
 const OutsSection = ({ outs, tableData }) => {
+  // Define all hand types with their display names
+  const handTypes = [
+    { key: 'royalFlush', name: 'Royal Flush' },
+    { key: 'straightFlush', name: 'Straight Flush' },
+    { key: 'fourOfAKind', name: 'Four of a Kind' },
+    { key: 'fullHouse', name: 'Full House' },
+    { key: 'flush', name: 'Flush' },
+    { key: 'straight', name: 'Straight' },
+    { key: 'threeOfAKind', name: 'Three of a Kind' },
+    { key: 'twoPair', name: 'Two Pair' },
+    { key: 'pair', name: 'Pair' },
+    { key: 'highCard', name: 'High Card' }
+  ];
+
   // Function to render outs cards
   const renderOutsCard = (card) => {
     const red = ['♥', '♦'];
@@ -78,114 +92,35 @@ const OutsSection = ({ outs, tableData }) => {
     return null;
   };
 
+  // Function to render a single hand type
+  const renderHandType = (handType) => {
+    const hasRankingData = tableData && tableData.rank && tableData.rank[handType.key];
+    
+    return (
+      <div key={handType.key} className="outs-item">
+        <div className="outs-header">
+          <span className="hand-name">{handType.name}</span>
+          {hasRankingData ? (
+            <span className="outs-count">
+              {tableData.rank[handType.key].isTrue ? 'Achieved!' : 
+               `${tableData.rank[handType.key].remaining.reduce((sum, item) => sum + item.needed, 0)} outs`}
+            </span>
+          ) : (
+            <span className="outs-count">({outs[handType.key].length} cards)</span>
+          )}
+        </div>
+        <div className="outs-cards">
+          {renderRankingStatus(handType.key) || outs[handType.key].map(renderOutsCard)}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="outs-section">
       <h2>Outs (Cards Needed)</h2>
       <div className="outs-grid">
-        <div className="outs-item">
-          <div className="outs-header">
-            <span className="hand-name">Royal Flush</span>
-            <span className="outs-count">({outs.royalFlush.length} cards)</span>
-          </div>
-          <div className="outs-cards">
-            {outs.royalFlush.map(renderOutsCard)}
-          </div>
-        </div>
-        <div className="outs-item">
-          <div className="outs-header">
-            <span className="hand-name">Straight Flush</span>
-            <span className="outs-count">({outs.straightFlush.length} cards)</span>
-          </div>
-          <div className="outs-cards">
-            {outs.straightFlush.map(renderOutsCard)}
-          </div>
-        </div>
-        <div className="outs-item">
-          <div className="outs-header">
-            <span className="hand-name">Four of a Kind</span>
-            <span className="outs-count">({outs.fourOfAKind.length} cards)</span>
-          </div>
-          <div className="outs-cards">
-            {outs.fourOfAKind.map(renderOutsCard)}
-          </div>
-        </div>
-        <div className="outs-item">
-          <div className="outs-header">
-            <span className="hand-name">Full House</span>
-            <span className="outs-count">({outs.fullHouse.length} cards)</span>
-          </div>
-          <div className="outs-cards">
-            {outs.fullHouse.map(renderOutsCard)}
-          </div>
-        </div>
-        <div className="outs-item">
-          <div className="outs-header">
-            <span className="hand-name">Flush</span>
-            {tableData && tableData.rank && tableData.rank.flush ? (
-              <span className="outs-count">
-                {tableData.rank.flush.isTrue ? 'Achieved!' : 
-                 `${tableData.rank.flush.remaining.reduce((sum, item) => sum + item.needed, 0)} outs`}
-              </span>
-            ) : (
-              <span className="outs-count">({outs.flush.length} cards)</span>
-            )}
-          </div>
-          <div className="outs-cards">
-            {renderRankingStatus('flush') || outs.flush.map(renderOutsCard)}
-          </div>
-        </div>
-        <div className="outs-item">
-          <div className="outs-header">
-            <span className="hand-name">Straight</span>
-            {tableData && tableData.rank && tableData.rank.straight ? (
-              <span className="outs-count">
-                {tableData.rank.straight.isTrue ? 'Achieved!' : 
-                 `${tableData.rank.straight.remaining.reduce((sum, item) => sum + item.needed, 0)} outs`}
-              </span>
-            ) : (
-              <span className="outs-count">({outs.straight.length} cards)</span>
-            )}
-          </div>
-          <div className="outs-cards">
-            {renderRankingStatus('straight') || outs.straight.map(renderOutsCard)}
-          </div>
-        </div>
-        <div className="outs-item">
-          <div className="outs-header">
-            <span className="hand-name">Three of a Kind</span>
-            <span className="outs-count">({outs.threeOfAKind.length} cards)</span>
-          </div>
-          <div className="outs-cards">
-            {outs.threeOfAKind.map(renderOutsCard)}
-          </div>
-        </div>
-        <div className="outs-item">
-          <div className="outs-header">
-            <span className="hand-name">Two Pair</span>
-            <span className="outs-count">({outs.twoPair.length} cards)</span>
-          </div>
-          <div className="outs-cards">
-            {outs.twoPair.map(renderOutsCard)}
-          </div>
-        </div>
-        <div className="outs-item">
-          <div className="outs-header">
-            <span className="hand-name">Pair</span>
-            <span className="outs-count">({outs.pair.length} cards)</span>
-          </div>
-          <div className="outs-cards">
-            {outs.pair.map(renderOutsCard)}
-          </div>
-        </div>
-        <div className="outs-item">
-          <div className="outs-header">
-            <span className="hand-name">High Card</span>
-            <span className="outs-count">({outs.highCard.length} cards)</span>
-          </div>
-          <div className="outs-cards">
-            {outs.highCard.map(renderOutsCard)}
-          </div>
-        </div>
+        {handTypes.map(renderHandType)}
       </div>
     </div>
   );

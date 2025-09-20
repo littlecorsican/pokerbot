@@ -68,6 +68,10 @@ export default class Pair {
     });
     
     // Sort by number of cards needed (ascending)
-    return remainingNeeded.sort((a, b) => a.needed - b.needed);
+    const sorted = remainingNeeded.sort((a, b) => a.needed - b.needed);
+    
+    // Keep only entries with the lowest "needed" count
+    const minNeeded = sorted[0]?.needed;
+    return sorted.filter(item => item.needed === minNeeded);
   }
 }
