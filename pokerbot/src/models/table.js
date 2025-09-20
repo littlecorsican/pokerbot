@@ -7,6 +7,7 @@ export default class Table {
     this.deck = new Deck();
     this.hole = new Hole();
     this.community = new Community();
+    this.rank = {};
   }
 
 

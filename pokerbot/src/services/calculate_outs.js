@@ -39,6 +39,15 @@ export const calculateOuts = () => {
 
     console.log('Flush:', new Flush().getRemaining(table.getHandCards()));
     console.log('Straight:', new Straight().getRemaining(table.getHandCards()));
+
+    table.rank.flush = {
+        isTrue: new Flush().isFlush(table.getHandCards()),
+        remaining: new Flush().getRemaining(table.getHandCards())
+    }
+    table.rank.straight = {
+        isTrue: new Straight().isStraight(table.getHandCards()),
+        remaining: new Straight().getRemaining(table.getHandCards())
+    }
     
     return table;
 }

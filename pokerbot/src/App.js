@@ -13,7 +13,8 @@ function App() {
   const black = ['♠', '♣'];
 
   useEffect(() => {
-    calculateOuts();
+    const table = calculateOuts();
+    console.log("table", table);
   }, []);
   
   // Generate all possible cards
