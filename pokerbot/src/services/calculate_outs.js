@@ -9,7 +9,7 @@ export const calculateOuts = () => {
     const communityCards = [
         new Card('2', '♠'),
         new Card('4', '♠'), 
-        new Card('6', '♠')
+        new Card('6', '♦')
     ];
     
     // Add community cards and remove from deck

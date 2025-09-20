@@ -96,8 +96,6 @@ export default class Straight {
       return true;
     }
 
-    console.log(this.getPossibleCards().length)
-
     const possibleCombinations = this.getPossibleCards();
     const existingCardIds = existingCards.map(card => `${card.rank}${card.suit}`);
     
@@ -119,6 +117,34 @@ export default class Straight {
     });
     
     // Sort by number of cards needed (ascending)
-    return remainingNeeded.sort((a, b) => a.needed - b.needed);
+    const sorted = remainingNeeded.sort((a, b) => a.needed - b.needed);
+    
+    // Group by cards needed (ignoring suits) and fill suits as "*"
+    const grouped = new Map();
+    
+    sorted.forEach(item => {
+      // Create a key based on ranks only (ignoring suits)
+      const rankKey = item.cards.map(card => card.rank).sort().join(',');
+      
+      if (!grouped.has(rankKey)) {
+        // Fill suits as "*" for the first occurrence
+        const cardsWithWildcardSuits = item.cards.map(card => ({
+          rank: card.rank,
+          suit: '*'
+        }));
+        
+        grouped.set(rankKey, {
+          needed: item.needed,
+          cards: cardsWithWildcardSuits,
+          combination: item.combination
+        });
+      }
+    });
+    
+    // Convert back to array and keep only entries with the lowest "needed" count
+    const result = Array.from(grouped.values());
+    const minNeeded = result[0]?.needed;
+    return result.filter(item => item.needed === minNeeded);
+    
   }
 }

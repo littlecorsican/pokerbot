@@ -74,7 +74,34 @@ export default class Flush {
       }
     });
     
-    // Sort by number of cards needed (ascending)
-    return remainingNeeded.sort((a, b) => a.needed - b.needed);
+    // Group by suit pattern (ignoring ranks) and fill ranks as "*"
+    const grouped = new Map();
+    
+    remainingNeeded.forEach(item => {
+      // Create a key based on suit pattern only (ignoring ranks)
+      const suitKey = item.cards.map(card => card.suit).sort().join(',');
+      
+      if (!grouped.has(suitKey)) {
+        // Fill ranks as "*" for the first occurrence
+        const cardsWithWildcardRanks = item.cards.map(card => ({
+          rank: '*',
+          suit: card.suit
+        }));
+        
+        grouped.set(suitKey, {
+          needed: item.needed,
+          cards: cardsWithWildcardRanks,
+          combination: item.combination
+        });
+      }
+    });
+    
+    // Convert back to array and sort by number of cards needed (ascending)
+    const result = Array.from(grouped.values());
+    const sorted = result.sort((a, b) => a.needed - b.needed);
+    
+    // Keep only entries with the lowest "needed" count
+    const minNeeded = sorted[0]?.needed;
+    return sorted.filter(item => item.needed === minNeeded);
   }
 }
