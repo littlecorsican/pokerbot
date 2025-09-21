@@ -98,6 +98,48 @@ export const calculateOuts = () => {
     }
 
     
+    table.rankWithoutHole.flush = {
+        isTrue: new Flush().isFlush(table.getCommunityCards()),
+        remaining: new Flush().getRemaining(table.getCommunityCards(), remainingCommunityCards)
+    }
+    table.rankWithoutHole.straight = {
+        isTrue: new Straight().isStraight(table.getCommunityCards()),
+        remaining: new Straight().getRemaining(table.getCommunityCards(), remainingCommunityCards)
+    }
+    table.rankWithoutHole.pair = {
+        isTrue: new Pair().isPair(table.getCommunityCards()),
+        remaining: new Pair().getRemaining(table.getCommunityCards(), remainingCommunityCards)
+    }
+    table.rankWithoutHole.twoPair = {
+        isTrue: new TwoPair().isTwoPair(table.getCommunityCards()),
+        remaining: new TwoPair().getRemaining(table.getCommunityCards(), remainingCommunityCards)
+    }
+    table.rankWithoutHole.threeOfAKind = {
+        isTrue: new ThreeOfAKind().isThreeOfAKind(table.getCommunityCards()),
+        remaining: new ThreeOfAKind().getRemaining(table.getCommunityCards(), remainingCommunityCards)
+    }
+
+    table.rankWithoutHole.fullHouse = {
+        isTrue: new FullHouse().isFullHouse(table.getCommunityCards()),
+        remaining: new FullHouse().getRemaining(table.getCommunityCards(), remainingCommunityCards)
+    }
+
+    table.rankWithoutHole.fourOfAKind = {
+        isTrue: new FourOfAKind().isFourOfAKind(table.getCommunityCards()),
+        remaining: new FourOfAKind().getRemaining(table.getCommunityCards(), remainingCommunityCards)
+    }
+
+    table.rankWithoutHole.straightFlush = {
+        isTrue: new StraightFlush().isStraightFlush(table.getCommunityCards()),
+        remaining: new StraightFlush().getRemaining(table.getCommunityCards(), remainingCommunityCards)
+    }
+
+    table.rankWithoutHole.royalFlush = {
+        isTrue: new RoyalFlush().isRoyalFlush(table.getCommunityCards()),
+        remaining: new RoyalFlush().getRemaining(table.getCommunityCards(), remainingCommunityCards)
+    }
+
+
     // Add ranking attribute as an object
     // table.ranking = {
     //     flush: new Flush(),

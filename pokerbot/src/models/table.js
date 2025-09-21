@@ -8,6 +8,7 @@ export default class Table {
     this.hole = new Hole();
     this.community = new Community();
     this.rank = {};
+    this.rankWithoutHole = {};
   }
 
 
@@ -16,6 +17,8 @@ export default class Table {
     this.deck.reset();
     this.hole.clear();
     this.community.clear();
+    this.rank = {};
+    this.rankWithoutHole = {};
   }
 
   // Get all cards currently on the table
@@ -75,6 +78,10 @@ export default class Table {
   // Get remaining cards that could be dealt
   getRemainingCards() {
     return this.deck.getRemainingCards();
+  }
+
+  getCommunityCards() {
+    return this.community.getValidCards();
   }
 
   // Get remaining community cards that can still be dealt (max 5 - current count)

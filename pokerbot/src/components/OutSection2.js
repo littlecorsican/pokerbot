@@ -1,6 +1,6 @@
 import React from 'react';
 
-const OutsSection = ({ outs, tableData }) => {
+const OutsSection2 = ({ outs, tableData }) => {
   // Define all hand types with their display names
   const handTypes = [
     { key: 'royalFlush', name: 'Royal Flush' },
@@ -29,11 +29,11 @@ const OutsSection = ({ outs, tableData }) => {
 
   // Function to render ranking status
   const renderRankingStatus = (handType) => {
-    if (!tableData || !tableData.rank || !tableData.rank[handType]) {
+    if (!tableData || !tableData.rankWithoutHole || !tableData.rankWithoutHole[handType]) {
       return null;
     }
 
-    const rankData = tableData.rank[handType];
+    const rankData = tableData.rankWithoutHole[handType];
     
     if (rankData.isTrue) {
       return (
@@ -118,7 +118,7 @@ const OutsSection = ({ outs, tableData }) => {
 
   return (
     <div className="outs-section">
-      <h2>Outs (Cards Needed Community + Hole)</h2>
+      <h2>Outs (Cards Needed Community Only)</h2>
       <div className="outs-grid">
         {handTypes.map(renderHandType)}
       </div>
@@ -126,4 +126,4 @@ const OutsSection = ({ outs, tableData }) => {
   );
 };
 
-export default OutsSection;
+export default OutsSection2;

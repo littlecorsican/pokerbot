@@ -4,6 +4,7 @@ import { calculatePokerHandProbabilities, getCurrentHandStrength } from './servi
 import { calculateOuts } from './services/calculate_outs';
 import ProbabilitySection from './components/ProbabilitySection';
 import OutsSection from './components/OutsSection';
+import OutsSection2 from './components/OutSection2';
 
 function App() {
   // Card ranks and suits
@@ -244,6 +245,7 @@ function App() {
 
         {/* Outs Display */}
         <OutsSection outs={outs} tableData={tableData} />
+        <OutsSection2 outs={outs} tableData={tableData} />
 
         {/* Card Selection Dropdown */}
         {renderDropdown()}
