@@ -1,5 +1,14 @@
 import Table from '../models/table';
-import { Flush, Straight, Pair, TwoPair, ThreeOfAKind, FullHouse, FourOfAKind } from '../models/rankings/index';
+import { Flush,
+    Straight,
+    Pair,
+    TwoPair,
+    ThreeOfAKind,
+    FullHouse,
+    FourOfAKind,
+    StraightFlush,
+    RoyalFlush
+} from '../models/rankings/index';
 import Card from '../models/card';
 
 export const calculateOuts = () => {
@@ -72,6 +81,16 @@ export const calculateOuts = () => {
     table.rank.fourOfAKind = {
         isTrue: new FourOfAKind().isFourOfAKind(table.getHandCards()),
         remaining: new FourOfAKind().getRemaining(table.getHandCards())
+    }
+
+    table.rank.straightFlush = {
+        isTrue: new StraightFlush().isStraightFlush(table.getHandCards()),
+        remaining: new StraightFlush().getRemaining(table.getHandCards())
+    }
+
+    table.rank.royalFlush = {
+        isTrue: new RoyalFlush().isRoyalFlush(table.getHandCards()),
+        remaining: new RoyalFlush().getRemaining(table.getHandCards())
     }
 
     
