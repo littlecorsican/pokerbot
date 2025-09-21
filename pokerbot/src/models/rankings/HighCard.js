@@ -32,7 +32,7 @@ export default class HighCard {
   }
 
   // Get remaining cards needed to form high card hands
-  getRemaining(existingCards) {
+  getRemaining(existingCards, remainingCommunityCards = 5) {
     // If we already have a high card hand, return true
     if (this.isHighCard(existingCards)) {
       return true;
@@ -58,8 +58,11 @@ export default class HighCard {
       }
     });
     
+    // Filter out combinations that require more cards than available
+    const filteredNeeded = remainingNeeded.filter(item => item.needed <= remainingCommunityCards);
+    
     // Sort by number of cards needed (ascending)
-    const sorted = remainingNeeded.sort((a, b) => a.needed - b.needed);
+    const sorted = filteredNeeded.sort((a, b) => a.needed - b.needed);
     
     // Group by ranks needed (ignoring suits) and fill suits as "*"
     const grouped = new Map();

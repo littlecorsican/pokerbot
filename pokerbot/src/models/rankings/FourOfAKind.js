@@ -34,7 +34,7 @@ export default class FourOfAKind {
   }
 
   // Get remaining cards needed to form four of a kind
-  getRemaining(existingCards) {
+  getRemaining(existingCards, remainingCommunityCards = 5) {
     // If we already have four of a kind, return true
     if (this.isFourOfAKind(existingCards)) {
       return true;
@@ -60,8 +60,11 @@ export default class FourOfAKind {
       }
     });
     
+    // Filter out combinations that require more cards than available
+    const filteredNeeded = remainingNeeded.filter(item => item.needed <= remainingCommunityCards);
+    
     // Sort by number of cards needed (ascending)
-    const sorted = remainingNeeded.sort((a, b) => a.needed - b.needed);
+    const sorted = filteredNeeded.sort((a, b) => a.needed - b.needed);
     
     // Group by ranks needed (ignoring suits) and fill suits as "*"
     const grouped = new Map();

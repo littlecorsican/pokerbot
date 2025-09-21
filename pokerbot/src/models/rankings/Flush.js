@@ -48,7 +48,7 @@ export default class Flush {
   }
 
   // Get remaining cards needed to form flushes
-  getRemaining(existingCards) {
+  getRemaining(existingCards, remainingCommunityCards = 5) {
     // If we already have a flush, return true
     if (this.isFlush(existingCards)) {
       return true;
@@ -96,9 +96,10 @@ export default class Flush {
       }
     });
     
-    // Convert back to array and sort by number of cards needed (ascending)
+    // Convert back to array and filter out combinations that require more cards than available
     const result = Array.from(grouped.values());
-    const sorted = result.sort((a, b) => a.needed - b.needed);
+    const filteredResult = result.filter(item => item.needed <= remainingCommunityCards);
+    const sorted = filteredResult.sort((a, b) => a.needed - b.needed);
     
     // Keep only entries with the lowest "needed" count
     const minNeeded = sorted[0]?.needed;

@@ -77,6 +77,13 @@ export default class Table {
     return this.deck.getRemainingCards();
   }
 
+  // Get remaining community cards that can still be dealt (max 5 - current count)
+  getRemainingCommunityCards() {
+    const maxCommunityCards = 5;
+    const currentCommunityCards = this.community.getCardCount();
+    return maxCommunityCards - currentCommunityCards;
+  }
+
   
   
 }

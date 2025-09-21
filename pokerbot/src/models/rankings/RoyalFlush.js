@@ -38,7 +38,7 @@ export default class RoyalFlush {
   }
 
   // Get remaining cards needed to form royal flushes
-  getRemaining(existingCards) {
+  getRemaining(existingCards, remainingCommunityCards = 5) {
     // If we already have a royal flush, return true
     if (this.isRoyalFlush(existingCards)) {
       return true;
@@ -64,8 +64,11 @@ export default class RoyalFlush {
       }
     });
     
+    // Filter out combinations that require more cards than available
+    const filteredNeeded = remainingNeeded.filter(item => item.needed <= remainingCommunityCards);
+    
     // Sort by number of cards needed (ascending)
-    const sorted = remainingNeeded.sort((a, b) => a.needed - b.needed);
+    const sorted = filteredNeeded.sort((a, b) => a.needed - b.needed);
     
     // Keep only entries with the lowest "needed" count
     const minNeeded = sorted[0]?.needed;

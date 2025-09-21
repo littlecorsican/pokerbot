@@ -52,45 +52,49 @@ export const calculateOuts = () => {
     console.log('Pair:', new Pair().isPair(table.getHandCards()));
     console.log('Pair:', new Pair().getRemaining(table.getHandCards()));
     
+    // Get remaining community cards that can still be dealt
+    const remainingCommunityCards = table.getRemainingCommunityCards();
+    console.log('Remaining community cards:', remainingCommunityCards);
+    
     table.rank.flush = {
         isTrue: new Flush().isFlush(table.getHandCards()),
-        remaining: new Flush().getRemaining(table.getHandCards())
+        remaining: new Flush().getRemaining(table.getHandCards(), remainingCommunityCards)
     }
     table.rank.straight = {
         isTrue: new Straight().isStraight(table.getHandCards()),
-        remaining: new Straight().getRemaining(table.getHandCards())
+        remaining: new Straight().getRemaining(table.getHandCards(), remainingCommunityCards)
     }
     table.rank.pair = {
         isTrue: new Pair().isPair(table.getHandCards()),
-        remaining: new Pair().getRemaining(table.getHandCards())
+        remaining: new Pair().getRemaining(table.getHandCards(), remainingCommunityCards)
     }
     table.rank.twoPair = {
         isTrue: new TwoPair().isTwoPair(table.getHandCards()),
-        remaining: new TwoPair().getRemaining(table.getHandCards())
+        remaining: new TwoPair().getRemaining(table.getHandCards(), remainingCommunityCards)
     }
     table.rank.threeOfAKind = {
         isTrue: new ThreeOfAKind().isThreeOfAKind(table.getHandCards()),
-        remaining: new ThreeOfAKind().getRemaining(table.getHandCards())
+        remaining: new ThreeOfAKind().getRemaining(table.getHandCards(), remainingCommunityCards)
     }
 
     table.rank.fullHouse = {
         isTrue: new FullHouse().isFullHouse(table.getHandCards()),
-        remaining: new FullHouse().getRemaining(table.getHandCards())
+        remaining: new FullHouse().getRemaining(table.getHandCards(), remainingCommunityCards)
     }
 
     table.rank.fourOfAKind = {
         isTrue: new FourOfAKind().isFourOfAKind(table.getHandCards()),
-        remaining: new FourOfAKind().getRemaining(table.getHandCards())
+        remaining: new FourOfAKind().getRemaining(table.getHandCards(), remainingCommunityCards)
     }
 
     table.rank.straightFlush = {
         isTrue: new StraightFlush().isStraightFlush(table.getHandCards()),
-        remaining: new StraightFlush().getRemaining(table.getHandCards())
+        remaining: new StraightFlush().getRemaining(table.getHandCards(), remainingCommunityCards)
     }
 
     table.rank.royalFlush = {
         isTrue: new RoyalFlush().isRoyalFlush(table.getHandCards()),
-        remaining: new RoyalFlush().getRemaining(table.getHandCards())
+        remaining: new RoyalFlush().getRemaining(table.getHandCards(), remainingCommunityCards)
     }
 
     
