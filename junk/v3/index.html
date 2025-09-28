@@ -1,0 +1,65 @@
+<!--
+
+    1) Predict What are the possibility for each combination ranking in the river only
+    2) Predict what is the possibility for each combination ranking in the river and hand
+    3) Calculate pot odds
+    4) Calculate the possibility % the remaining cards will get you your best combination
+
+
+-->
+
+
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <script src="helper.js"></script>
+        <script src="dealer.js"></script>
+        <!-- <script src="party.js" type="module"></script>
+        <script src="royalflush.js" type="module"></script>
+        <script src="straightflush.js" type="module"></script>-->
+    </head>
+    <body>
+
+        <div class="main">
+            <div>Dealer's card</div>
+            <div class="sub-main" name="dealercard" id="card1"></div>
+            <div class="sub-main" name="dealercard" id="card2"></div>
+            <div class="sub-main" name="dealercard" id="card3"></div>
+            <div class="sub-main" name="dealercard" id="card4"></div>
+            <div class="sub-main" name="dealercard" id="card5"></div>
+        </div>
+
+        <div class="hand">
+            <div>Hand's card</div>
+            <div class="sub-main" name="dealercard" id="card6"></div>
+            <div class="sub-main" name="dealercard" id="card7"></div>
+
+        </div>
+
+        <div class="pot">
+            <div>Calculate pot odds</div>
+            <div>
+                Pot amount : <input type="text" size="3" id="potmoney" value="0" />
+                Add amount to your money : <input type="text" size="3" id="yourcall" value="0" />
+                Your money : <span id="yourtotalmoney">0</span>
+                Implied odds : <span id="impliedodds">0</span>
+                <button onClick="addToPot()">Add</button>
+            </div>
+        </div>
+
+        <div style="text-align:center">
+            <button onClick="reset()">Reset</button>
+            <button onClick="analyze()">Analyze</button>
+        </div>
+
+        <div class="card-picker" id="cardContainer"></div>
+
+    <script>
+
+       
+
+
+
+    </script>
+    </body>
+</html>
